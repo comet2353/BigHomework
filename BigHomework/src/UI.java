@@ -84,8 +84,50 @@ class MainFrame{
         centerPanel.add(modifyPanel);
         centerPanel.add(buttonPanel);
         centerPanel.add(DBPanel);
-        centerPanel.add(ansPanel);
+        centerPanel.add(ansPanel);//右下角面板
+        // 1. 给右下角面板设置布局：流式布局，组件从左到右排列
+        ansPanel.setLayout(new FlowLayout());
 
+        // 2. 创建文字标签：提示用户输入姓名
+        JLabel ansLabel = new JLabel("请输入目标姓名：");
+        // 3. 创建输入框：用户在这里输入内容，宽度20个字符
+        JTextField ansInput = new JTextField(20);
+        // 4. 创建按钮：点击这个按钮，开始校验输入内容
+        JButton checkBtn = new JButton("确认核对");
+
+        // 5. 把 标签、输入框、按钮 依次添加到右下角面板上
+        ansPanel.add(ansLabel);
+        ansPanel.add(ansInput);
+        ansPanel.add(checkBtn);
+
+        // 6. 给【确认核对】按钮绑定点击事件：点击后执行校验逻辑
+        checkBtn.addActionListener(e -> {
+        // 第一步：获取输入框里的内容，trim() 去掉首尾多余空格
+        String inputName = ansInput.getText().trim();
+
+        //判断输入框是否为空
+        if(inputName.isEmpty()){
+        // 弹出提示窗口：提醒用户必须输入内容，JOptionPane是专门用来做弹窗的工具
+        JOptionPane.showMessageDialog(frame, "请先输入姓名！", "提示", JOptionPane.WARNING_MESSAGE);
+        return; // 终止当前代码，不再往下执行
+            }
+
+         // 校验2：格式校验，只允许纯中文，禁止数字、字母、符号
+         if (!inputName.matches("^[\\u4e00-\\u9fa5]+$")) {
+         // 格式不符合要求，弹出错误窗口
+         JOptionPane.showMessageDialog(frame, "输入不正确！只能输入中文姓名，不能包含数字、字母和符号", "校验失败", JOptionPane.ERROR_MESSAGE // 弹窗显示红色错误图标);
+         return;
+            }
+
+          // 校验3：查询数据库，判断输入的名字是否存在
+          // 调用DAO类的方法，去数据库查询该姓名是否存在
+          boolean nameIsExist = DAO.checkNameExist(inputName);
+          if(!nameIsExist){
+          JOptionPane.showMessageDialog(frame, "输入不正确！该人员不在档案库中", "核对失败", JOptionPane.ERROR_MESSAGE);
+          return;
+            }
+          // 所有校验全部通过，输入内容完全正确
+          JOptionPane.showMessageDialog(frame, "核对正确！", "提示", JOptionPane.INFORMATION_MESSAGE);});
 
         //modifyPanel个人信息修改panel：标题 + 4种信息的修改框（2*2）
         //标题区域
