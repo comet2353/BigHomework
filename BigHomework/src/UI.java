@@ -2,10 +2,17 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class UI {
     public static void main(String[] args) {
-        MainFrame mainframe = new MainFrame();
+        // 确保UI在EDT线程运行
+        //任务提交到 事件分发线程（ EDT） 的队列中
+        //将UI的创建/更改集中在单一线程中
+        //防止因对同一个组件的多次更改集中在同一时间时导致的崩溃
+        //MainFrame::new
+        //等价于 () -> new MainFrame()
+        SwingUtilities.invokeLater(MainFrame::new);
     }
 }
 
@@ -14,13 +21,16 @@ class MainFrame{
     // 表格模型（用于动态更新数据）
     DefaultTableModel tableModel;
     JTable dataTable;
+    // 声明输入框引用（用于获取输入值）
+    JTextField nameField, ageField, sexField, heightField;
+    DAO dao = new DAO(); // 实例化DAO
 
     public MainFrame() {
         frame.setTitle("█ █ █ █");
 
 
         //窗口背景设置
-        BackgroundPanel backgroundPanel = new BackgroundPanel("image/background.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel("image/bg.jpg");
         frame.setContentPane(backgroundPanel);
 
 
@@ -41,10 +51,9 @@ class MainFrame{
         backgroundPanel.add(centerPanel,BorderLayout.CENTER);
         backgroundPanel.add(northPanel,BorderLayout.NORTH);
 
-
         //设置左部分panel：人物显示区域panel + 文本显示panel
-        JPanel chaPanel = new JPanel();
-        JPanel contPanel = new JPanel();
+        BackgroundPanel chaPanel = new BackgroundPanel("image/peopleBG.jpg");
+        BackgroundPanel contPanel = new BackgroundPanel("image/textBG.png");
         //设置westpanel的空边距，
         westPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         //panel颜色设置
@@ -54,9 +63,6 @@ class MainFrame{
         chaPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));//边框颜色，像素
         contPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));//边框颜色，像素
         westPanel.setLayout(new GridLayout(2,1,10,10));//网格布局(行数，列数，水平间距，垂直间距)
-        //文本显示panel背景图
-        BackgroundPanel textBG = new BackgroundPanel("image/textBG.png");
-        contPanel.setContentPane(textBG);
 
 
         westPanel.add(chaPanel);
@@ -78,7 +84,7 @@ class MainFrame{
         DBPanel.setPreferredSize(new Dimension(433,197));
         ansPanel.setPreferredSize(new Dimension(433,100));
 
-        ansPanel.setBackground(Color.BLUE);
+        //ansPanel.setBackground(Color.BLUE);
 
         centerPanel.setLayout(new FlowLayout());
         centerPanel.add(modifyPanel);
@@ -100,18 +106,26 @@ class MainFrame{
 
         //信息添加/修稿区：含有4个大小相同的部分，用网格布局2*2
         JPanel modifyArea = new JPanel();//外部框
-        InputPanel namePanel = new InputPanel("姓名：");//姓名框
-        InputPanel agePanel = new InputPanel("年龄：");//年龄框
-        InputPanel sexPanel = new InputPanel("性别：");//性别框
-        InputPanel heightPanel = new InputPanel("身高：");//身高框
+        //输入框
+        InputPanel nameInputPanel = new InputPanel("姓名：");//姓名框
+        InputPanel ageInputPanel = new InputPanel("年龄：");//年龄框
+        InputPanel sexInputPanel = new InputPanel("性别：");//性别框
+        InputPanel heightInputPanel = new InputPanel("身高：");//身高框
+
+        // 获取输入框中内容
+        nameField = nameInputPanel.getTextField();
+        ageField = ageInputPanel.getTextField();
+        sexField = sexInputPanel.getTextField();
+        heightField = heightInputPanel.getTextField();
+
         //设置modifyArea布局：网格布局
         modifyArea.setLayout(new GridLayout(2,2,5,10));
         modifyArea.setBorder(BorderFactory.createEmptyBorder(5,10,5,0));
 
-        modifyArea.add(namePanel);
-        modifyArea.add(agePanel);
-        modifyArea.add(sexPanel);
-        modifyArea.add(heightPanel);
+        modifyArea.add(nameInputPanel);
+        modifyArea.add(ageInputPanel);
+        modifyArea.add(sexInputPanel);
+        modifyArea.add(heightInputPanel);
         modifyPanel.add(modifyArea,BorderLayout.CENTER);//将modifyArea加入到modifyPanel中
 
 
@@ -189,38 +203,139 @@ class MainFrame{
 
         DBPanel.add(disPanel, BorderLayout.CENTER);
 
-        // 添加按钮事件监听器
 
-        // 查询全部按钮
-//        queryBtn.addActionListener(e -> {
-//            loadAllStudents();
-//        });
-//        //按姓名查询
-//        searchBtn.addActionListener(e->{
-//            String searchName = searchPart.getText().trim();//获取用户输入的搜索信息
-//            //若输入为空
-//            if(searchName.isEmpty() ){
-//                JOptionPane.showMessageDialog(frame,"请输入要查询的姓名。");
-//                return;
-//            }
-//            searchStudentByName(searchName);//调用查询方法
-//        });
-//
-//        //增加学生信息
-//        addBtn.addActionListener(e->{
-//            String name = nameField.getText().trim();
-//            String heightText = heightField.getText().trim();
-//            String ageText = ageField.getText().trim();
-//            String sex = sexField.getText().trim();
-//
-//            if(name.isEmpty() || heightText.isEmpty() || ageText.isEmpty() || sex.isEmpty())
-//                JOptionPane.showMessageDialog(frame,"请输入完整的学生信息。");
-//            return;
-//        }//赋值后，将原本数据类型与
-//        try{
-//
-//        }
-//        );
+        // 答案面板（核对姓名）
+        ansPanel.setLayout(new FlowLayout());
+        JLabel ansLabel = new JLabel("请输入目标姓名：");
+        JTextField ansInput = new JTextField(20);
+        JButton checkBtn = new JButton("确认核对");
+        ansPanel.add(ansLabel);
+        ansPanel.add(ansInput);
+        ansPanel.add(checkBtn);
+
+
+
+        // ===================== 事件绑定 =====================
+        // 1. 查询全部
+        queryBtn.addActionListener(e -> loadAllStudents());
+
+        // 2. 按姓名查询
+        searchBtn.addActionListener(e -> {
+            String searchName = searchPart.getText().trim();
+            if (searchName.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "请输入要查询的姓名。");
+                return;
+            }
+            loadStudentByName(searchName);
+        });
+
+        // 3. 添加学生
+        addBtn.addActionListener(e -> {
+            try {
+                String name = nameField.getText().trim();
+                String ageStr = ageField.getText().trim();
+                String sex = sexField.getText().trim();
+                String heightStr = heightField.getText().trim();
+
+                // 非空校验
+                if (name.isEmpty() || ageStr.isEmpty() || sex.isEmpty() || heightStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "请输入完整的学生信息！");
+                    return;
+                }
+
+                // 类型转换
+                int age = Integer.parseInt(ageStr);
+                double height = Double.parseDouble(heightStr);
+
+                // 调用DAO添加
+                boolean success = dao.addStudent(name, age, sex, height);
+                if (success) {
+                    JOptionPane.showMessageDialog(frame, "添加成功！");
+                    loadAllStudents(); // 刷新表格
+                    clearInputFields(); // 清空输入框
+                } else {
+                    JOptionPane.showMessageDialog(frame, "添加失败！");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "年龄请输入整数，身高请输入数字！");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "添加异常！");
+            }
+        });
+
+        // 4. 修改学生
+        modBtn.addActionListener(e -> {
+            try {
+                String name = nameField.getText().trim();
+                String ageStr = ageField.getText().trim();
+                String sex = sexField.getText().trim();
+                String heightStr = heightField.getText().trim();
+
+                if (name.isEmpty() || ageStr.isEmpty() || sex.isEmpty() || heightStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "请输入完整的学生信息！");
+                    return;
+                }
+
+                int age = Integer.parseInt(ageStr);
+                double height = Double.parseDouble(heightStr);
+
+                boolean success = dao.updateStudent(name, age, sex, height);
+                if (success) {
+                    JOptionPane.showMessageDialog(frame, "修改成功！");
+                    loadAllStudents();
+                    clearInputFields();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "修改失败（姓名不存在？）！");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "年龄请输入整数，身高请输入数字！");
+            }
+        });
+
+        // 5. 删除学生
+        delBtn.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "请输入要删除的学生姓名！");
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(frame, "确认删除【" + name + "】吗？", "删除确认", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                boolean success = dao.deleteStudent(name);
+                if (success) {
+                    JOptionPane.showMessageDialog(frame, "删除成功！");
+                    loadAllStudents();
+                    clearInputFields();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "删除失败（姓名不存在？）！");
+                }
+            }
+        });
+
+        // 6. 姓名核对
+        checkBtn.addActionListener(e -> {
+            String inputName = ansInput.getText().trim();
+            if (inputName.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "请先输入姓名！", "提示", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 中文校验
+            if (!inputName.matches("^[\\u4e00-\\u9fa5]+$")) {
+                JOptionPane.showMessageDialog(frame, "只能输入中文姓名！", "校验失败", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 数据库校验
+            boolean exists = dao.checkNameExist(inputName);
+            if (exists) {
+                JOptionPane.showMessageDialog(frame, "核对正确！", "提示", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(frame, "该人员不在档案库中！", "核对失败", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
 
         frame.setBounds(500, 100, 800, 600);//窗口大小
@@ -230,21 +345,57 @@ class MainFrame{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    // 加载所有学生到表格
+    private void loadAllStudents() {
+        tableModel.setRowCount(0); // 清空表格
+        List<Object[]> students = dao.getAllStudents();
+        for (Object[] row : students) {
+            tableModel.addRow(row);
+        }
+    }
+
+    // 按姓名加载学生到表格
+    private void loadStudentByName(String name) {
+        tableModel.setRowCount(0);
+        List<Object[]> students = dao.searchStudent(name);
+        if (students.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "未找到【" + name + "】的信息！");
+            return;
+        }
+        for (Object[] row : students) {
+            tableModel.addRow(row);
+        }
+    }
+
+    // 清空输入框
+    private void clearInputFields() {
+        nameField.setText("");
+        ageField.setText("");
+        sexField.setText("");
+        heightField.setText("");
+    }
 }
-//信息添加/修稿部分1/4尺寸设置
+
+
+//信息添加/修改部分1/4尺寸设置
 class InputPanel extends JPanel{
+    private JTextField textField;
 
     InputPanel(String name){
         setLayout(new BorderLayout());
         add(new JLabel(name,JLabel.LEFT),BorderLayout.WEST);
-        JTextField nameField = new JTextField("");
-        nameField.setEditable(true);
-        add(nameField,BorderLayout.CENTER);
+        textField = new JTextField("");
+        textField.setEditable(true);
+        add(textField,BorderLayout.CENTER);
 
+    }
+    //获取输入框内容
+    public JTextField getTextField() {
+        return textField;
     }
 }
 
-//按钮尺寸设置
+//自定义按钮尺寸设置
 class Btn extends JButton{
 
     Btn(String name){

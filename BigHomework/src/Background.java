@@ -18,7 +18,7 @@ class BackgroundPanel extends JPanel {
             //从文件读取图片，并保存到变量
 
         }catch(IOException e) {
-            e.printStackTrace();//若读取失败，打印错误信息///
+            e.printStackTrace();//若读取失败，打印错误信息
 
         }
     }
