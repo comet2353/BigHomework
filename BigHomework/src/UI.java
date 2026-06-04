@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class UI {
@@ -24,6 +26,14 @@ class MainFrame{
     // 声明输入框引用（用于获取输入值）
     JTextField nameField, ageField, sexField, heightField;
     DAO dao = new DAO(); // 实例化DAO
+    
+    // 翻页相关组件
+    PageManager pageManager;
+    JTextArea textArea;
+    JLabel imageLabel;
+    JLabel pageLabel;
+    JButton prevBtn;
+    JButton nextBtn;
 
     public MainFrame() {
         frame.setTitle("█ █ █ █");
@@ -51,6 +61,9 @@ class MainFrame{
         backgroundPanel.add(centerPanel,BorderLayout.CENTER);
         backgroundPanel.add(northPanel,BorderLayout.NORTH);
 
+        // 初始化页面管理器
+        pageManager = new PageManager();
+
         //设置左部分panel：人物显示区域panel + 文本显示panel
         BackgroundPanel chaPanel = new BackgroundPanel("image/peopleBG.jpg");
         BackgroundPanel contPanel = new BackgroundPanel("image/textBG.png");
@@ -64,6 +77,103 @@ class MainFrame{
         contPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));//边框颜色，像素
         westPanel.setLayout(new GridLayout(2,1,10,10));//网格布局(行数，列数，水平间距，垂直间距)
 
+        // 图片显示区域（在文本框上方）
+        imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        imageLabel.setPreferredSize(new Dimension(312, 150));
+        imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        
+        // 加载第一张图片
+        updateImageDisplay();
+
+        chaPanel.setLayout(new BorderLayout());
+        chaPanel.add(imageLabel, BorderLayout.NORTH);
+
+        // 文本显示区域（使用JTextArea支持多行文本）
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        textArea.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBackground(new Color(255, 255, 255, 200));
+        textArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // 设置初始文本
+        updateTextDisplay();
+
+        JScrollPane textScrollPane = new JScrollPane(textArea);
+        textScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        contPanel.setLayout(new BorderLayout());
+        contPanel.add(textScrollPane, BorderLayout.CENTER);
+
+        // 页码显示
+        pageLabel = new JLabel(pageManager.getPageDisplay(), SwingConstants.CENTER);
+        pageLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        pageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        contPanel.add(pageLabel, BorderLayout.SOUTH);
+
+        // 翻页按钮面板@@@@@@@@@@
+        JPanel flipButtonPanel = new JPanel();
+        flipButtonPanel.setOpaque(false);
+        flipButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        
+        prevBtn = new JButton("上一页");
+        nextBtn = new JButton("下一页");
+        prevBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+        nextBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+        prevBtn.setPreferredSize(new Dimension(80, 30));
+        nextBtn.setPreferredSize(new Dimension(80, 30));
+        
+        flipButtonPanel.add(prevBtn);
+        
+        // 页码显示（在两个按钮中间）
+        pageLabel = new JLabel(pageManager.getPageDisplay(), SwingConstants.CENTER);
+        pageLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        pageLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        flipButtonPanel.add(pageLabel);
+        
+        flipButtonPanel.add(nextBtn);
+        
+        contPanel.add(flipButtonPanel, BorderLayout.SOUTH);
+
+        // 为文本区域添加鼠标点击事件
+        textArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 点击文本框时扩展总页数
+                if (pageManager.expandTotalPages()) {
+                    updateTextDisplay();
+                    updateImageDisplay();
+                    updatePageLabel();
+                    updateButtonStates();
+                } else {
+                    // 如果已经是最后一页，提示用户
+                    JOptionPane.showMessageDialog(frame, "已经是最后一页了！");
+                }
+            }
+        });
+
+        // 上一页按钮事件
+        prevBtn.addActionListener(e -> {
+            if (pageManager.previousPage()) {
+                updateTextDisplay();
+                updateImageDisplay();
+                updatePageLabel();
+                updateButtonStates();
+            }
+        });
+
+        // 下一页按钮事件
+        nextBtn.addActionListener(e -> {
+            if (pageManager.nextPage()) {
+                updateTextDisplay();
+                updateImageDisplay();
+                updatePageLabel();
+                updateButtonStates();
+            }
+        });
 
         westPanel.add(chaPanel);
         westPanel.add(contPanel);
@@ -91,6 +201,7 @@ class MainFrame{
         centerPanel.add(buttonPanel);
         centerPanel.add(DBPanel);
         centerPanel.add(ansPanel);
+
 
 
         //modifyPanel个人信息修改panel：标题 + 4种信息的修改框（2*2）
@@ -343,6 +454,43 @@ class MainFrame{
         frame.setResizable(false);//用户不可调整窗口大小
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    // 更新文本显示
+    private void updateTextDisplay() {
+        textArea.setText(pageManager.getCurrentText());
+    }
+
+    // 更新图片显示
+    private void updateImageDisplay() {
+        String imagePath = pageManager.getCurrentImagePath();
+        if (imagePath != null) {
+            ImageIcon icon = new ImageIcon(imagePath);
+            if (icon.getIconWidth() > 0) { // 图片加载成功
+                // 缩放图片以适应标签大小
+                Image scaledImage = icon.getImage().getScaledInstance(
+                    300, 140, Image.SCALE_SMOOTH
+                );
+                imageLabel.setIcon(new ImageIcon(scaledImage));
+            } else {
+                imageLabel.setIcon(null);
+                imageLabel.setText("图片加载中...");
+            }
+        } else {
+            imageLabel.setIcon(null);
+            imageLabel.setText("暂无图片");
+        }
+    }
+
+    // 更新页码显示
+    private void updatePageLabel() {
+        pageLabel.setText(pageManager.getPageDisplay());
+    }
+
+    // 更新按钮状态
+    private void updateButtonStates() {
+        prevBtn.setEnabled(pageManager.hasPrevious());
+        nextBtn.setEnabled(pageManager.hasNext());
     }
 
     // 加载所有学生到表格
