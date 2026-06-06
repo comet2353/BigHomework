@@ -81,8 +81,9 @@ class MainFrame{
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        imageLabel.setPreferredSize(new Dimension(312, 150));
+        imageLabel.setPreferredSize(new Dimension(250, 250));
         imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
         
         // 加载第一张图片
         updateImageDisplay();
@@ -477,7 +478,7 @@ class MainFrame{
             if (icon.getIconWidth() > 0) { // 图片加载成功
                 // 缩放图片以适应标签大小
                 Image scaledImage = icon.getImage().getScaledInstance(
-                    300, 140, Image.SCALE_SMOOTH
+                        316, 241, Image.SCALE_SMOOTH
                 );
                 imageLabel.setIcon(new ImageIcon(scaledImage));
             } else {
