@@ -32,8 +32,8 @@ class MainFrame{
     JTextArea textArea;
     JLabel imageLabel;
     JLabel pageLabel;
-    JButton prevBtn;
-    JButton nextBtn;
+    Btn prevBtn;
+    Btn nextBtn;
 
     public MainFrame() {
         frame.setTitle("█ █ █ █");
@@ -120,8 +120,8 @@ class MainFrame{
         flipButtonPanel.setOpaque(false);
         flipButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         
-        prevBtn = new JButton("上一页");
-        nextBtn = new JButton("下一页");
+        prevBtn = new Btn("上一页");
+        nextBtn = new Btn("下一页");
         prevBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
         nextBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
         prevBtn.setPreferredSize(new Dimension(80, 30));
@@ -143,8 +143,16 @@ class MainFrame{
         textArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 点击文本框时扩展总页数
-                if (pageManager.expandTotalPages()) {
+                // 如果当前页小于总页数（如1/2, 2/4），先翻到下一页
+                if (pageManager.getCurrentPageNumber() < pageManager.getTotalPages()) {
+                    pageManager.nextPage();
+                    updateTextDisplay();
+                    updateImageDisplay();
+                    updatePageLabel();
+                    updateButtonStates();
+                } 
+                // 如果当前页等于总页数，尝试扩展总页数
+                else if (pageManager.expandTotalPages()) {
                     updateTextDisplay();
                     updateImageDisplay();
                     updatePageLabel();
@@ -320,7 +328,7 @@ class MainFrame{
         ansPanel.setLayout(new FlowLayout());
         JLabel ansLabel = new JLabel("请输入目标姓名：");
         JTextField ansInput = new JTextField(20);
-        JButton checkBtn = new JButton("确认核对");
+        Btn checkBtn = new Btn("确认核对");
         ansPanel.add(ansLabel);
         ansPanel.add(ansInput);
         ansPanel.add(checkBtn);
