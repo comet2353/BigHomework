@@ -32,8 +32,8 @@ class MainFrame{
     JTextArea textArea;
     JLabel imageLabel;
     JLabel pageLabel;
-    JButton prevBtn;
-    JButton nextBtn;
+    Btn prevBtn;
+    Btn nextBtn;
 
     public MainFrame() {
         frame.setTitle("█ █ █ █");
@@ -119,8 +119,8 @@ class MainFrame{
         flipButtonPanel.setOpaque(false);
         flipButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         
-        prevBtn = new JButton("上一页");
-        nextBtn = new JButton("下一页");
+        prevBtn = new Btn("上一页");
+        nextBtn = new Btn("下一页");
         prevBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
         nextBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
         prevBtn.setPreferredSize(new Dimension(80, 30));
@@ -327,7 +327,7 @@ class MainFrame{
         ansPanel.setLayout(new FlowLayout());
         JLabel ansLabel = new JLabel("请输入目标姓名：");
         JTextField ansInput = new JTextField(20);
-        JButton checkBtn = new JButton("确认核对");
+        Btn checkBtn = new Btn("确认核对");
         ansPanel.add(ansLabel);
         ansPanel.add(ansInput);
         ansPanel.add(checkBtn);
