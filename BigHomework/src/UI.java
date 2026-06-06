@@ -185,7 +185,7 @@ class MainFrame{
         
         prevBtn = new BtnIcon("image/上一个.png");
         nextBtn = new BtnIcon("image/下一个.png");
-      
+
         prevBtn.setPreferredSize(new Dimension(80, 30));
         nextBtn.setPreferredSize(new Dimension(80, 30));
         
@@ -263,7 +263,7 @@ class MainFrame{
         modifyPanel.setPreferredSize(new Dimension(433,125));
         buttonPanel.setPreferredSize(new Dimension(433,50));
         DBPanel.setPreferredSize(new Dimension(433,197));
-        ansPanel.setPreferredSize(new Dimension(433,100));
+        ansPanel.setPreferredSize(new Dimension(433,35));
 
         //ansPanel.setBackground(Color.BLUE);
 
