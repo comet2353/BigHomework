@@ -11,7 +11,7 @@ public class DAO {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from student where name = ?";
+        String sql = "select * from TopSecretArchives where name = ?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -29,17 +29,19 @@ public class DAO {
     }
 
     // 添加学生
-    public boolean addStudent(String name, int age, String sex, double height) {
+    public boolean addStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "insert into student(name, age, sex, height) values(?, ?, ?, ?)";
+        String sql = "insert into TopSecretArchives(num, name, nickname, workplace, hobby, notes) values(?, ?, ?, ?, ?, ?)";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, name);
-            pstmt.setInt(2, age);
-            pstmt.setString(3, sex);
-            pstmt.setDouble(4, height);
+            pstmt.setString(1, num);
+            pstmt.setString(2, name);
+            pstmt.setString(3, nickname);
+            pstmt.setString(4, workplace);
+            pstmt.setString(5, hobby);
+            pstmt.setString(6, notes);
             int rows = pstmt.executeUpdate();
             return rows > 0; // 插入成功返回true
         } catch (Exception e) {
@@ -51,17 +53,19 @@ public class DAO {
     }
 
     // 通过查找姓名，修改学生
-    public boolean updateStudent(String name, int age, String sex, double height) {
+    public boolean updateStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "update student set age=?, sex=?, height=? where name=?";
+        String sql = "update TopSecretArchives set num=?, nickname=?, workplace=?, hobby=?, notes=? where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, age);
-            pstmt.setString(2, sex);
-            pstmt.setDouble(3, height);
-            pstmt.setString(4, name);
+            pstmt.setString(1, num);
+            pstmt.setString(2, nickname);
+            pstmt.setString(3, workplace);
+            pstmt.setString(4, hobby);
+            pstmt.setString(5, notes);
+            pstmt.setString(6, name);
             int rows = pstmt.executeUpdate();
             return rows > 0;
         } catch (Exception e) {
@@ -76,7 +80,7 @@ public class DAO {
     public boolean deleteStudent(String name) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "delete from student where name=?";
+        String sql = "delete from TopSecretArchives where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -97,20 +101,22 @@ public class DAO {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select id, name, height, sex, age from student";
+        String sql = "select * from TopSecretArchives";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Object[] row = {
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("height"),
-                        rs.getString("sex"),
-                        rs.getInt("age")
+                        rs.getString("num"),
+                        rs.getString("nickname"),
+                        rs.getString("workplace"),
+                        rs.getString("hobby"),
+                        rs.getString("notes"),
+                        rs.getString("name")
                 };
                 list.add(row);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +132,7 @@ public class DAO {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select id, name, height, sex, age from student where name=?";
+        String sql = "select * from TopSecretArchives where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -134,11 +140,12 @@ public class DAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Object[] row = {
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("height"),
-                        rs.getString("sex"),
-                        rs.getInt("age")
+                        rs.getString("num"),
+                        rs.getString("nickname"),
+                        rs.getString("workplace"),
+                        rs.getString("hobby"),
+                        rs.getString("notes"),
+                        rs.getString("name")
                 };
                 list.add(row);
             }
