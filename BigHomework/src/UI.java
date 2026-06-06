@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.net.URL;
 
 public class UI {
     public static void main(String[] args) {
@@ -63,6 +64,33 @@ class MainFrame{
         backgroundPanel.add(westPanel,BorderLayout.WEST);
         backgroundPanel.add(centerPanel,BorderLayout.CENTER);
         backgroundPanel.add(northPanel,BorderLayout.NORTH);
+
+        //软件图标
+        // 软件图标 - 优化版
+        try {
+            // 1.
+            String iconPath = "iron/2.png"; // 改为你的图标路径
+            //URL iconUrl = UI.class.getResource(iconPath);
+            URL iconUrl = UI.class.getClassLoader().getResource(iconPath);
+
+            if (iconUrl == null) {
+                JOptionPane.showMessageDialog(null, "图标文件不存在：" + iconPath, "资源错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            ImageIcon icon = new ImageIcon(iconUrl);
+            Image image = icon.getImage();
+            if (image == null) {
+                JOptionPane.showMessageDialog(null, "图标文件损坏或格式不支持：" + iconPath, "资源错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            frame.setIconImage(image);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "加载图标失败：" + e.getMessage(), "异常", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
 
         // ===================== 顶部功能按钮区域 =====================
         // 设置northPanel布局为流式布局（左对齐，水平间距10，垂直间距2）
@@ -157,7 +185,7 @@ class MainFrame{
         // 文本显示区域（使用JTextArea支持多行文本）
         textArea = new JTextArea();
         textArea.setEditable(false);
-        textArea.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        textArea.setFont(new Font("微软雅黑", Font.PLAIN, 20));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setBackground(new Color(255, 255, 255, 200));
@@ -280,13 +308,13 @@ class MainFrame{
 
         //modifyPanel个人信息修改panel：标题 + 4种信息的修改框（2*2）
         //标题区域
-        JLabel infoMidifyLabel = new JLabel("学生信息添加/修改");
+        JLabel infoMidifyLabel = new JLabel("绝密档案");
 
         modifyPanel.setLayout(new BorderLayout());//设置整个修改框的布局
         //标题的边距
         infoMidifyLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
         //字体设置
-        infoMidifyLabel.setFont(new Font("微软雅黑",Font.BOLD,15));
+        infoMidifyLabel.setFont(new Font("微软雅黑",Font.BOLD,16));
         modifyPanel.add(infoMidifyLabel,BorderLayout.NORTH);
 
         //信息添加/修稿区：含有4个大小相同的部分，用网格布局2*2
