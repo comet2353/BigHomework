@@ -21,35 +21,28 @@ public class PageManager {
         // 添加文本页
         textPages.add("a：贵安，档案管理员。今天的新闻看了吗，fsd让我来找你，查查那个藏起来的凶手是谁。");
         textPages.add("a：为什么找你？整个fsd大概没人比你知道的更多吧。");
-        textPages.add("a：谁让我来的……？末日的仓鼠之王，祂的信息你肯定查得到。（暗示user输入末日的仓鼠之王进行查找）" +
-                "\n" +
-                "*仓鼠之王，编号0505，溶酶体复兴者，工作单位：溶酶体。爱好思考人生。备注：难以捉摸的神秘领导者，最好不要惹祂，可能会带来末日。");
-        textPages.add("a：你知道祂？那就知道这件事情的严重性吧。目击者说，这个人的头发是黄色的。" +
-                "\n" +
-                "*五Java，编号1205，洪秀全的父亲，工作单位：614。爱好卖烧烤。备注：曾经染了黄头发，现在是布丁头。（F）\n" +
-                "*小斗斗，编号0512，心健部毁灭战士，工作单位：614。爱好歌唱。备注：被无期吉驰和侧颜杀染了黄头发。（F）\n" +
-                "*额每里卡，编号0001，美国人，工作单位：美国。爱好美国，备注：黄头发。（F）\n" +
-                "*……省略几个人\n" +
-                "（菜单栏有一个random，鼠标悬浮在上面显示，没思路吗？随便选个人看看吧。点了之后会从数据库里面抽取一个人的信息，显示在一个弹窗，只是有排版的信息罢了，没有增加多少）");
-        textPages.add("a：还有一个可以确定的，这个人绝对来自614，614部门出内鬼了。（严肃脸）\n" +
-                "（数据库里只有三个人来自614。我们可以把这三个人的信息添加到新表。）");
+        textPages.add("a：谁让我来的……？末日的仓鼠之王，祂的信息你肯定查得到。" +
+                "\n");
+        textPages.add("a：你知道祂？那就知道这件事情的严重性吧。我们可以确定的是，这个人绝对来自614，614部门出内鬼了。。" +
+                "\n" );
+        textPages.add("a：对了。目击者说，这个人的头发是黄色的。\n" );
         textPages.add("a：还没查好吗，你的信息不会从08年开始就没有更新了吧，你知道春团已经从614调到behold了吗。");
         textPages.add("a：……好吧，你先记下吧。");
-        textPages.add("a：我们只有这点信息，你得查个两三天吧（这时候这人还在微笑，但是看起来有点得意）");
+        textPages.add("a：我们只有这点信息，你得查个两三天吧");
         textPages.add("a：查到了？……这么快，也是，小瞧你了");
         textPages.add("a：我有点期待下次的合作了，也许你还能再见到我。");
 
         // 添加图片路径
-        imagePaths.add("image/page1.jpg");
-        imagePaths.add("image/page2.jpg");
-        imagePaths.add("image/page3.jpg");
-        imagePaths.add("image/page4.jpg");
-        imagePaths.add("image/page5.jpg");
-        imagePaths.add("image/page6.jpg");
-        imagePaths.add("image/page7.jpg");
-        imagePaths.add("image/page8.jpg");
-        imagePaths.add("image/page9.jpg");
-        imagePaths.add("image/page10.jpg");
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_010.png");
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_006.png");
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_010.png");
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_004.png");
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_007.png");
     }
 
     // 获取当前文本内容
