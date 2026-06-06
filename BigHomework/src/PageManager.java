@@ -19,10 +19,12 @@ public class PageManager {
 
     private void initializePages() {
         // 添加文本页
-        textPages.add("a：\n您好，档案管理员。我是FSD派来的，想拜托你帮忙追查一名隐藏的嫌疑人。");
-        textPages.add("a：\nFSD那边几经考量，全系统里就属你的档案库存最全，才特地委托我过来。");
-        textPages.add("a：\n委托方是末日的仓鼠之王，相关线索只有这么多，麻烦你先检索祂的相关档案。");
-        textPages.add("【管理员操作查询后】\nA：既然查到委托人信息，你应该清楚这次案件的轻重了。");
+        textPages.add("**请点击屏幕");
+        textPages.add("a：\n您好，档案管理员。");
+        textPages.add("a：\n我是FSD派来的，想拜托你帮忙追查一名隐藏的嫌疑人。");
+        textPages.add("a：\nFSD那边几经考量，全系统没人知道的比你更多，我们需要你的帮助。");
+        textPages.add("a：\n委托方是末日的仓鼠之王，你一定知道祂吧\n。"+"*这是谁？在后台偷偷查一下应该没事");
+        textPages.add("【管理员操作查询后】\nA：你知道祂呀，那你应该清楚这次案件的轻重了。");
         textPages.add("a：\n目前锁定关键线索：嫌疑人隶属于614部门，部门内部出现内鬼。");
         textPages.add("a：\n还有一条目击证词，嫌疑人有着一头黄色头发，这是外貌关键特征。");
         textPages.add("【管理员翻阅档案间隙】\nA：听说春团早前已经从614调去Behold分部了，这条情报你档案里有记录吧？");
@@ -31,6 +33,8 @@ public class PageManager {
         textPages.add("a：\n我有点期待下次的合作了，也许你还能再见到我。");
 
         // 添加图片路径
+        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_010.png");
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_010.png");
         imagePaths.add("image/a_005.png");

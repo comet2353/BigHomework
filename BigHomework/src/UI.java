@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.net.URL;
 
 public class UI {
     public static void main(String[] args) {
@@ -63,6 +64,33 @@ class MainFrame{
         backgroundPanel.add(westPanel,BorderLayout.WEST);
         backgroundPanel.add(centerPanel,BorderLayout.CENTER);
         backgroundPanel.add(northPanel,BorderLayout.NORTH);
+
+        //软件图标
+        // 软件图标 - 优化版
+        try {
+            // 1.
+            String iconPath = "iron/2.png"; // 改为你的图标路径
+            //URL iconUrl = UI.class.getResource(iconPath);
+            URL iconUrl = UI.class.getClassLoader().getResource(iconPath);
+
+            if (iconUrl == null) {
+                JOptionPane.showMessageDialog(null, "图标文件不存在：" + iconPath, "资源错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            ImageIcon icon = new ImageIcon(iconUrl);
+            Image image = icon.getImage();
+            if (image == null) {
+                JOptionPane.showMessageDialog(null, "图标文件损坏或格式不支持：" + iconPath, "资源错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            frame.setIconImage(image);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "加载图标失败：" + e.getMessage(), "异常", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
 
         // ===================== 顶部功能按钮区域 =====================
         // 设置northPanel布局为流式布局（左对齐，水平间距10，垂直间距2）
