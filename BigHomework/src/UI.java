@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -51,15 +53,76 @@ class MainFrame{
         //设置透明度
         westPanel.setOpaque(false);
         centerPanel.setOpaque(false);
-        northPanel.setOpaque(false);
+        //northPanel.setOpaque(false);
 
         westPanel.setPreferredSize(new Dimension(352,572));//尺寸刚好贴合右侧显示区
         //center部分不做绝对尺寸限制(448,572)
         northPanel.setPreferredSize(new Dimension(800,28));//尺寸刚好贴合顶部黑色菜单
+        northPanel.setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout());//边界布局
         backgroundPanel.add(westPanel,BorderLayout.WEST);
         backgroundPanel.add(centerPanel,BorderLayout.CENTER);
         backgroundPanel.add(northPanel,BorderLayout.NORTH);
+
+        // ===================== 顶部功能按钮区域 =====================
+        // 设置northPanel布局为流式布局（左对齐，水平间距10，垂直间距2）
+        northPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 2));
+        JButton topBtn1 = new JButton("功能一");
+        JButton topBtn2 = new JButton("功能二");
+        JButton topBtn3 = new JButton("功能三");
+        JButton topBtn4 = new JButton("功能四");
+        JButton topBtn5 = new JButton("功能五");
+        
+        // 为按钮添加图标（取消注释并修改图片路径即可使用）
+        // topBtn1.setIcon(new ImageIcon("image/icon1.png"));
+        // topBtn2.setIcon(new ImageIcon("image/icon2.png"));
+        // topBtn3.setIcon(new ImageIcon("image/icon3.png"));
+        // topBtn4.setIcon(new ImageIcon("image/icon4.png"));
+        // topBtn5.setIcon(new ImageIcon("image/icon5.png"));
+
+        // 设置按钮背景色为白色
+        topBtn1.setBackground(Color.WHITE);
+        topBtn2.setBackground(Color.WHITE);
+        topBtn3.setBackground(Color.WHITE);
+        topBtn4.setBackground(Color.WHITE);
+        topBtn5.setBackground(Color.WHITE);
+        
+        // 设置按钮尺寸（宽80像素，高22像素）
+        topBtn1.setPreferredSize(new Dimension(80, 22));
+        topBtn2.setPreferredSize(new Dimension(80, 22));
+        topBtn3.setPreferredSize(new Dimension(80, 22));
+        topBtn4.setPreferredSize(new Dimension(80, 22));
+        topBtn5.setPreferredSize(new Dimension(80, 22));
+        
+        // 设置按钮边框（灰色细线，圆角效果）
+        topBtn1.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+        topBtn2.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+        topBtn3.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+        topBtn4.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+        topBtn5.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+        
+        // 创建统一的事件监听器（点击任意按钮弹出提示框）
+        ActionListener topButtonListener = e -> {
+            JOptionPane.showMessageDialog(frame, "该功能还在开发中~");
+        };
+        
+        // 为所有按钮绑定事件监听器
+        topBtn1.addActionListener(topButtonListener);
+        topBtn2.addActionListener(topButtonListener);
+        topBtn3.addActionListener(topButtonListener);
+        topBtn4.addActionListener(topButtonListener);
+        topBtn5.addActionListener(topButtonListener);
+        
+        // 将按钮和分割条添加到顶部面板（按钮之间用垂直分割条分隔）
+        northPanel.add(topBtn1);
+        northPanel.add(new JSeparator(SwingConstants.VERTICAL));
+        northPanel.add(topBtn2);
+        northPanel.add(new JSeparator(SwingConstants.VERTICAL));
+        northPanel.add(topBtn3);
+        northPanel.add(new JSeparator(SwingConstants.VERTICAL));
+        northPanel.add(topBtn4);
+        northPanel.add(new JSeparator(SwingConstants.VERTICAL));
+        northPanel.add(topBtn5);
 
         // 初始化页面管理器
         pageManager = new PageManager();
