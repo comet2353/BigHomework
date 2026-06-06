@@ -34,8 +34,8 @@ class MainFrame{
     JTextArea textArea;
     JLabel imageLabel;
     JLabel pageLabel;
-    Btn prevBtn;
-    Btn nextBtn;
+    BtnIcon prevBtn;
+    BtnIcon nextBtn;
 
     public MainFrame() {
         frame.setTitle("█ █ █ █");
@@ -183,10 +183,9 @@ class MainFrame{
         flipButtonPanel.setOpaque(false);
         flipButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
         
-        prevBtn = new Btn("上一页");
-        nextBtn = new Btn("下一页");
-        prevBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
-        nextBtn.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+        prevBtn = new BtnIcon("image/上一个.png");
+        nextBtn = new BtnIcon("image/下一个.png");
+      
         prevBtn.setPreferredSize(new Dimension(80, 30));
         nextBtn.setPreferredSize(new Dimension(80, 30));
         
@@ -625,6 +624,32 @@ class Btn extends JButton{
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(75,25));
         setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
+    }
+    //空参构造
+    Btn(){
+        //按钮细节设置
+        setFont(new java.awt.Font("Courier",Font.PLAIN,13));//设置Jbutton字体大小 以及风格
+        setBackground(Color.WHITE);
+        setPreferredSize(new Dimension(75,25));
+        setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
+    }
+
+
+
+}
+//翻页按钮的图标设置，继承Btn类
+class BtnIcon extends Btn{
+    private ImageIcon icon ;
+    private Image image ;
+    private Image scaledImage;
+
+    //构造方法，传入参数为图片的相对路径
+    public BtnIcon(String way){
+        super();
+        icon = new ImageIcon(way);
+        image = icon.getImage();
+        scaledImage = image.getScaledInstance(24,24, Image.SCALE_SMOOTH);
+        this.setIcon(new ImageIcon(scaledImage));
     }
 
 
