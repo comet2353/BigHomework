@@ -142,8 +142,16 @@ class MainFrame{
         textArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 点击文本框时扩展总页数
-                if (pageManager.expandTotalPages()) {
+                // 如果当前页小于总页数（如1/2, 2/4），先翻到下一页
+                if (pageManager.getCurrentPageNumber() < pageManager.getTotalPages()) {
+                    pageManager.nextPage();
+                    updateTextDisplay();
+                    updateImageDisplay();
+                    updatePageLabel();
+                    updateButtonStates();
+                } 
+                // 如果当前页等于总页数，尝试扩展总页数
+                else if (pageManager.expandTotalPages()) {
                     updateTextDisplay();
                     updateImageDisplay();
                     updatePageLabel();

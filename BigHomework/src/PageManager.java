@@ -76,6 +76,10 @@ public class PageManager {
             currentPageIndex = maxPageIndex; // 自动跳转到新页面
             return true;
         }
+        // 如果当前页不在可见的最后一页，说明还有未浏览的页面，不扩展但返回true表示可以翻页
+        if (currentPageIndex < maxPageIndex) {
+            return true; // 表示可以翻到下一页
+        }
         // 如果已经是全部页面的最后一页，返回false表示无法再扩展
         return false;
     }
