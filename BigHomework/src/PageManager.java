@@ -36,7 +36,7 @@ public class PageManager {
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_010.png");
         imagePaths.add("image/a_005.png");
-        imagePaths.add("image/a_010.png");
+        imagePaths.add("image/a_008.png");
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_006.png");
         imagePaths.add("image/a_005.png");
