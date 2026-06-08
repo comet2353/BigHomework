@@ -17,7 +17,9 @@ public class UI {
         //防止因对同一个组件的多次更改集中在同一时间时导致的崩溃
         //MainFrame::new
         //等价于 () -> new MainFrame()
-        SwingUtilities.invokeLater(MainFrame::new);
+        SwingUtilities.invokeLater(() -> {
+            new SplashScreen().setVisible(true);
+        });
     }
 }
 
@@ -289,8 +291,8 @@ class MainFrame{
 
         //设置各区块的绝对尺寸
         modifyPanel.setPreferredSize(new Dimension(433,170));
-        buttonPanel.setPreferredSize(new Dimension(433,30));
-        DBPanel.setPreferredSize(new Dimension(433,230));
+        buttonPanel.setPreferredSize(new Dimension(433,50));
+        DBPanel.setPreferredSize(new Dimension(433,220));
         ansPanel.setPreferredSize(new Dimension(433,35));
 
         //透明化panel
@@ -302,10 +304,7 @@ class MainFrame{
         centerPanel.add(modifyPanel);
         centerPanel.add(buttonPanel);
         centerPanel.add(DBPanel);
-        centerPanel.add(ansPanel);
-
-
-
+        centerPanel.add(ansPanel);//右下角面板
         //modifyPanel个人信息修改panel：标题 + 4种信息的修改框（2*2）
         //标题区域
         JLabel infoMidifyLabel = new JLabel("绝密档案");
@@ -365,58 +364,33 @@ class MainFrame{
 
         //DBPanel：数据库信息显示区域（使用JTable显示数据）：搜索框 + 数据显示区域
         DBPanel.setLayout(new BorderLayout());
-//搜索区域
+        //搜索区域
         JPanel searchPanel = new JPanel();
-//【修改1：外层改成垂直布局，实现上下分行】
-        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
+        JLabel searchLabel = new JLabel("按姓名查询：");
+        JTextField searchPart = new JTextField();
+        JButton searchBtn = new JButton("查询");
+
+        //透明度设置
         searchPanel.setOpaque(false);
+
+        //searchPanel布局为流式布局，左对齐，垂直间距5，水平间距5
+        searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+        //searchPanel的边距
         searchPanel.setBorder(BorderFactory.createEmptyBorder(0,3,0,0));
 
-//===== 第一行：第一个搜索行 =====
-        JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT,20,2));
-        row1.setOpaque(false);
-        JLabel searchLabel = new JLabel("      ");
-        JTextField searchPart = new JTextField();
-        JButton searchBtn1 = new JButton("查询");
+        //查询按钮设置
+        searchBtn.setFont(new java.awt.Font("Courier",Font.PLAIN,13));//设置Jbutton字体大小 以及风格
+        searchBtn.setBackground(Color.WHITE);
+        searchBtn.setPreferredSize(new Dimension(55,20));
+        searchBtn.setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
 
-//查询按钮1设置
-        searchBtn1.setFont(new java.awt.Font("Courier",Font.PLAIN,13));
-        searchBtn1.setBackground(Color.WHITE);
-        searchBtn1.setPreferredSize(new Dimension(55,20));
-        searchBtn1.setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
-//搜索框1尺寸
+        //搜索框设置
         searchPart.setPreferredSize(new Dimension(175,25));
 
-        row1.add(searchLabel);
-        row1.add(searchPart);
-        row1.add(searchBtn1);
-        searchPanel.add(row1);
-
-//【两行中间空隙】
-        searchPanel.add(Box.createVerticalStrut(3));
-
-//===== 第二行：第二个搜索行（新增searchPart2，和上面结构一致，垂直在下方） =====
-        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT,20,2));
-        row2.setOpaque(false);
-        JLabel searchLabel2 = new JLabel("      ");
-        JTextField searchPart2 = new JTextField(); //第二个独立输入框
-        JButton searchBtn2 = new JButton("查询");
-
-//搜索按钮2配置（沿用你原来样式）
-        searchBtn2.setFont(new java.awt.Font("Courier",Font.PLAIN,13));
-        searchBtn2.setBackground(Color.WHITE);
-        searchBtn2.setPreferredSize(new Dimension(55,20));
-        searchBtn2.setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
-//第二个输入框尺寸
-        searchPart2.setPreferredSize(new Dimension(175,25));
-
-        row2.add(searchLabel2);
-        row2.add(searchPart2);
-        row2.add(searchBtn2);
-        searchPanel.add(row2);
-
-//整体挂载到DBPanel顶部
         DBPanel.add(searchPanel,BorderLayout.NORTH);
+        searchPanel.add(searchLabel);
+        searchPanel.add(searchPart);
+        searchPanel.add(searchBtn);
 
 
 
@@ -467,20 +441,10 @@ class MainFrame{
         queryBtn.addActionListener(e -> loadAllStudents());
 
         // 2. 按姓名查询
-        searchBtn1.addActionListener(e -> {
+        searchBtn.addActionListener(e -> {
             String searchName = searchPart.getText().trim();
             if (searchName.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "请输入要查询的姓名。");
-                return;
-            }
-            loadStudentByName(searchName);
-        });
-        //2.1.按备注查询
-        // 2. 按姓名查询
-        searchBtn1.addActionListener(e -> {
-            String searchName = searchPart2.getText().trim();
-            if (searchName.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "请输入要查询的备注。");
                 return;
             }
             loadStudentByName(searchName);
@@ -664,6 +628,10 @@ class MainFrame{
         workplaceField.setText("");
         hobbyField.setText("");
         notesField.setText("");
+    }
+
+
+    public void setVisible(boolean b) {
     }
 }
 

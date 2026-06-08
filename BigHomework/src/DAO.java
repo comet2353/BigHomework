@@ -32,7 +32,7 @@ public class DAO {
     public boolean addStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "insert into TopSecretArchives(num, name, nickname, workplace, hobby, notes) values(?, ?, ?, ?, ?, ?)";
+        String sql = "insert into TopSecretArchives(number, name, nickname, workplace, hobby, remark) values(?, ?, ?, ?, ?, ?)";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -56,7 +56,7 @@ public class DAO {
     public boolean updateStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "update TopSecretArchives set num=?, nickname=?, workplace=?, hobby=?, notes=? where name=?";
+        String sql = "update TopSecretArchives set number=?, nickname=?, workplace=?, hobby=?, remark=? where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -108,15 +108,15 @@ public class DAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Object[] row = {
-                        rs.getString("num"),
+                        rs.getString("number"),
+                        rs.getString("name"),
                         rs.getString("nickname"),
                         rs.getString("workplace"),
                         rs.getString("hobby"),
-                        rs.getString("notes"),
-                        rs.getString("name")
+                        rs.getString("remark")
                 };
                 list.add(row);
-
+    
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +125,7 @@ public class DAO {
         }
         return list;
     }
-
+    
     // 按姓名查询学生
     public List<Object[]> searchStudent(String name) {
         List<Object[]> list = new ArrayList<>();
@@ -140,12 +140,12 @@ public class DAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Object[] row = {
-                        rs.getString("num"),
+                        rs.getString("number"),
+                        rs.getString("name"),
                         rs.getString("nickname"),
                         rs.getString("workplace"),
                         rs.getString("hobby"),
-                        rs.getString("notes"),
-                        rs.getString("name")
+                        rs.getString("remark")
                 };
                 list.add(row);
             }
