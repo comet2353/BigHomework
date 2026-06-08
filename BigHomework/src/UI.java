@@ -95,41 +95,41 @@ class MainFrame{
 
 
         // ===================== 顶部功能按钮区域 =====================
-        // 设置northPanel布局为流式布局（左对齐，水平间距10，垂直间距2）
         northPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 2));
-        JButton topBtn1 = new JButton("功能一");
-        JButton topBtn2 = new JButton("功能二");
-        JButton topBtn3 = new JButton("功能三");
-        JButton topBtn4 = new JButton("功能四");
-        JButton topBtn5 = new JButton("功能五");
-        
-        // 为按钮添加图标（取消注释并修改图片路径即可使用）
-        // topBtn1.setIcon(new ImageIcon("image/icon1.png"));
-        // topBtn2.setIcon(new ImageIcon("image/icon2.png"));
-        // topBtn3.setIcon(new ImageIcon("image/icon3.png"));
-        // topBtn4.setIcon(new ImageIcon("image/icon4.png"));
-        // topBtn5.setIcon(new ImageIcon("image/icon5.png"));
 
-        // 设置按钮背景色为白色
-        topBtn1.setBackground(Color.WHITE);
-        topBtn2.setBackground(Color.WHITE);
-        topBtn3.setBackground(Color.WHITE);
-        topBtn4.setBackground(Color.WHITE);
-        topBtn5.setBackground(Color.WHITE);
-        
-        // 设置按钮尺寸（宽80像素，高22像素）
-        topBtn1.setPreferredSize(new Dimension(80, 22));
-        topBtn2.setPreferredSize(new Dimension(80, 22));
-        topBtn3.setPreferredSize(new Dimension(80, 22));
-        topBtn4.setPreferredSize(new Dimension(80, 22));
-        topBtn5.setPreferredSize(new Dimension(80, 22));
-        
-        // 设置按钮边框（灰色细线，圆角效果）
-        topBtn1.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
-        topBtn2.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
-        topBtn3.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
-        topBtn4.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
-        topBtn5.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
+// 1. 先创建图标（你把路径补全即可）
+        ImageIcon icon1 = new ImageIcon("image/icon1.png");
+        ImageIcon icon2 = new ImageIcon("image/icon2.png");
+        ImageIcon icon3 = new ImageIcon("image/icon3.png");
+        ImageIcon icon4 = new ImageIcon("image/icon4.png");
+        ImageIcon icon5 = new ImageIcon("image/icon51.png");
+
+// 2. 按钮：只传图标，不传文字 → 自然就没文字
+        JButton topBtn1 = new JButton(icon1);
+        JButton topBtn2 = new JButton(icon2);
+        JButton topBtn3 = new JButton(icon3);
+        JButton topBtn4 = new JButton(icon4);
+        JButton topBtn5 = new JButton(icon5);
+
+// 3. 统一设置样式（白色背景、尺寸、灰色圆角边框）
+        Dimension btnSize = new Dimension(80, 22);
+        Border btnBorder = BorderFactory.createLineBorder(Color.black, 1, true);
+
+        JButton[] btns = {topBtn1, topBtn2, topBtn3, topBtn4, topBtn5};
+        for (JButton btn : btns) {
+            btn.setBackground(Color.WHITE);
+            btn.setPreferredSize(btnSize);
+            btn.setBorder(btnBorder);
+            // 可选：去掉按钮默认的“按下填充色”，更像纯图片按钮
+            btn.setContentAreaFilled(false);
+        }
+
+// 4. 加到面板
+        northPanel.add(topBtn1);
+        northPanel.add(topBtn2);
+        northPanel.add(topBtn3);
+        northPanel.add(topBtn4);
+        northPanel.add(topBtn5);
         
         // 创建统一的事件监听器（点击任意按钮弹出提示框）
         ActionListener topButtonListener = e -> {
@@ -381,7 +381,7 @@ class MainFrame{
         //查询按钮设置
         searchBtn.setFont(new java.awt.Font("Courier",Font.PLAIN,13));//设置Jbutton字体大小 以及风格
         searchBtn.setBackground(Color.WHITE);
-        searchBtn.setPreferredSize(new Dimension(55,20));
+        searchBtn.setPreferredSize(new Dimension(55,50));
         searchBtn.setBorder(BorderFactory.createLineBorder(Color.gray,1,true));
 
         //搜索框设置

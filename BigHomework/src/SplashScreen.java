@@ -14,8 +14,9 @@ public class SplashScreen extends JFrame {
     private boolean isFirstPage = true;
 
     // ====================== 你只需要改这里的图片路径 ======================
+    //我都要笑死了这个雷霆笑脸
     private final String FIRST_BG = "image/splash.png";   // 第一页背景
-    private final String SECOND_BG = "image/menu.png";  // 第二页背景
+    private final String SECOND_BG = "image/menu.jpg";  // 第二页背景
 
     public SplashScreen() {
         // 窗口基础设置
@@ -38,6 +39,8 @@ public class SplashScreen extends JFrame {
         mainPanel.setLayout(new BorderLayout());
 
         // 小组名字
+
+        ImageIcon groupIcon = new ImageIcon("image/yourPic.png"); // 换成你的图片路径
         nameLabel = new JLabel("groupIron", SwingConstants.CENTER);
         nameLabel.setFont(new Font("Arial", Font.BOLD, 50));
         nameLabel.setForeground(new Color(1, 1, 1, 0)); // 初始透明
@@ -81,7 +84,7 @@ public class SplashScreen extends JFrame {
         mainPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(20, 30, 20, 30);
-
+/*
         // ====================== PLAY 按钮（黑色）======================
         JButton playBtn = new JButton("PLAY");
         playBtn.setFont(new Font("Arial", Font.BOLD, 22));
@@ -113,25 +116,72 @@ public class SplashScreen extends JFrame {
         setContentPane(mainPanel);
         revalidate();
         repaint();
-    }
+    }*/
+        // ====================== PLAY 按钮（图片版，150*50）======================
+        JButton playBtn = new JButton();
+        playBtn.setIcon(new ImageIcon("image/play.png"));
+        playBtn.setPreferredSize(new Dimension(250, 100));
+        playBtn.setFocusPainted(false);
+        playBtn.setContentAreaFilled(false);
+        playBtn.setBorderPainted(false);
 
-    // 背景图片面板（你项目里有 BackgroundPanel 就用你自己的）
-    class BackgroundPanel extends JPanel {
-        private Image image;
+        playBtn.addActionListener(e -> {
+            dispose();
+            new MainFrame().setVisible(true);
+        });
 
-        public BackgroundPanel(String imagePath) {
-            try {
-                image = new ImageIcon(imagePath).getImage();
-            } catch (Exception e) {
-                System.out.println("背景图加载失败：" + imagePath);
+// ====================== READ 按钮（图片版，150*50）======================
+        JButton readBtn = new JButton();
+        readBtn.setIcon(new ImageIcon("image/read.png"));
+        readBtn.setPreferredSize(new Dimension(250, 100));
+        readBtn.setFocusPainted(false);
+        readBtn.setContentAreaFilled(false);
+        readBtn.setBorderPainted(false);
+
+// ====================== 核心：强制右下角 ======================
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+
+// --------- 这里改成 0，完全贴紧 ---------
+        gbc.insets = new Insets(0, 0, 0, 30);
+
+// 第一个按钮 PLAY（上面）
+        mainPanel.add(playBtn, gbc);
+
+// 第二个按钮 READ（下面）
+        gbc.gridy = 2;
+// 重点：给下面按钮也设置 0 间距
+        gbc.insets = new Insets(0, 0, 5, 30);
+        mainPanel.add(readBtn, gbc);
+
+        setContentPane(mainPanel);
+        revalidate();
+        repaint();
+
+        // 背景图片面板
+        class BackgroundPanel extends JPanel {
+            private Image image;
+
+            public BackgroundPanel(String imagePath) {
+                try {
+                    image = new ImageIcon(imagePath).getImage();
+                } catch (Exception e) {
+                    System.out.println("背景图加载失败：" + imagePath);
+                }
             }
-        }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            if (image != null) {
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (image != null) {
+                    g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            }
             }
         }
     }
