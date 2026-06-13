@@ -16,7 +16,7 @@ public class PageManager {
         // 初始化一些示例数据
         initializePages();
     }
-
+//只需要再增加pages.add()就能很方便地实现增加页数
     private void initializePages() {
         // 添加文本页
         textPages.add("**请点击屏幕");
@@ -29,12 +29,13 @@ public class PageManager {
         textPages.add("a：\n还有一条目击证词，嫌疑人有着一头黄色头发，这是外貌关键特征。");
         textPages.add("【管理员翻阅档案间隙】\nA：听说春团早前已经从614调去Behold分部了，这条情报你档案里有记录吧？");
         textPages.add("a：\n我们只有这点信息，你得查个两三天吧");
+        textPages.add("\n*【管理员操作中】\n……");
         textPages.add("a：\n查到了？……这么快，也是，小瞧你了");
         textPages.add("a：\n我有点期待下次的合作了，也许你还能再见到我。");
 
         // 添加图片路径
         imagePaths.add("image/a_005.png");
-        imagePaths.add("image/a_010.png");
+        imagePaths.add("image/a_007.png");
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_008.png");
         imagePaths.add("image/a_005.png");
@@ -43,6 +44,7 @@ public class PageManager {
         imagePaths.add("image/a_010.png");
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_004.png");
+        imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_007.png");
     }
@@ -62,7 +64,7 @@ public class PageManager {
         }
         return imagePaths.get(currentPageIndex);
     }
-
+//**********************重要
     // 点击文本框：增加总页数并跳转到新页（解锁新一页）
     public boolean expandTotalPages() {
         // 如果当前已经在可见的最后一页，则可以扩展总页数
