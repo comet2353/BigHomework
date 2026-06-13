@@ -71,7 +71,7 @@ class MainFrame{
         // 软件图标 - 优化版
         try {
             // 1.
-            String iconPath = "iron/2.png"; // 改为你的图标路径
+            String iconPath = "iron/5.26实训图标.png"; // 改为你的图标路径
             //URL iconUrl = UI.class.getResource(iconPath);
             URL iconUrl = UI.class.getClassLoader().getResource(iconPath);
 
@@ -104,7 +104,7 @@ class MainFrame{
         ImageIcon icon4 = new ImageIcon("image/icon4.png");
         ImageIcon icon5 = new ImageIcon("image/icon51.png");
 
-// 2. 按钮：只传图标，不传文字 → 自然就没文字
+// 2. 按钮：只传图标，不传文字
         JButton topBtn1 = new JButton(icon1);
         JButton topBtn2 = new JButton(icon2);
         JButton topBtn3 = new JButton(icon3);

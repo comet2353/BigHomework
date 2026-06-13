@@ -19,7 +19,7 @@ public class PageManager {
 //只需要再增加pages.add()就能很方便地实现增加页数
     private void initializePages() {
         // 添加文本页
-        textPages.add("**请点击屏幕");
+        textPages.add("**请点击屏幕**\n右界面为user的工作面板");
         textPages.add("a：\n您好，档案管理员。");
         textPages.add("a：\n我是FSD派来的，想拜托你帮忙追查一名隐藏的嫌疑人。");
         textPages.add("a：\nFSD那边几经考量，全系统没人知道的比你更多，我们需要你的帮助。");
@@ -45,7 +45,7 @@ public class PageManager {
         imagePaths.add("image/a_005.png");
         imagePaths.add("image/a_004.png");
         imagePaths.add("image/a_005.png");
-        imagePaths.add("image/a_005.png");
+        imagePaths.add("image/a_008.png");
         imagePaths.add("image/a_007.png");
     }
 

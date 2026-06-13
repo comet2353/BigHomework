@@ -13,8 +13,9 @@ public class SplashScreen extends JFrame {
     private float opacity = 0.0f;
     private boolean isFirstPage = true;
 
-    // ====================== 你只需要改这里的图片路径 ======================
-    //我都要笑死了这个雷霆笑脸
+
+    // ====================== 只需要改这里的图片路径 ======================
+    //
     private final String FIRST_BG = "image/splash.png";   // 第一页背景
     private final String SECOND_BG = "image/menu.jpg";  // 第二页背景
 
@@ -29,63 +30,90 @@ public class SplashScreen extends JFrame {
         // 初始化第一页
         initFirstPage();
 
-        // 小组名淡入动画
-        startFadeAnimation();
     }
 
-    // 第一页：背景 + 淡入小组名 groupIron
+    // 第一页：背景 + 图片淡入淡出
     private void initFirstPage() {
         mainPanel = new BackgroundPanel(FIRST_BG);
         mainPanel.setLayout(new BorderLayout());
 
-        // 小组名字
+        // 改用自定义透明图片标签
+        ImageIcon groupIcon = new ImageIcon("image/name.png");
+        // 关键：使用 FadeImageLabel，不是原生 JLabel
+        FadeImageLabel nameLabel = new FadeImageLabel(groupIcon);
+        // 初始图片完全透明
+        nameLabel.setAlpha(0.0f);
 
-        ImageIcon groupIcon = new ImageIcon("image/yourPic.png"); // 换成你的图片路径
-        nameLabel = new JLabel("groupIron", SwingConstants.CENTER);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 50));
-        nameLabel.setForeground(new Color(255, 255, 255, 0)); // 初始透明
         mainPanel.add(nameLabel, BorderLayout.CENTER);
 
-        // 自动切换：2秒后平滑过渡到第二页
-        javax.swing.Timer timer = new javax.swing.Timer(2000, e -> {
-            // 可选：淡出动画
-            animateFadeOut(nameLabel, () -> switchToSecondPage());
+        // 先淡入，停留片刻再淡出切页
+        javax.swing.Timer fadeInTimer = new javax.swing.Timer(20, e -> {
+            float curAlpha = nameLabel.getAlpha() + 0.05f;
+            if (curAlpha >= 1.0f) {
+                curAlpha = 1.0f;
+                ((javax.swing.Timer)e.getSource()).stop();
+                // 淡入完成后，延时再执行淡出
+                new javax.swing.Timer(2000, ev -> {
+                    animateFadeOut(nameLabel, () -> switchToSecondPage());
+                }).start();
+            }
+            nameLabel.setAlpha(curAlpha);
         });
-        timer.setRepeats(false);
-        timer.start();
+        fadeInTimer.setRepeats(true);
+        fadeInTimer.start();
 
         setContentPane(mainPanel);
     }
-    private void animateFadeOut(JComponent comp, Runnable onFinish) {
-        Timer timer = new Timer(20, null);
-        final float[] alpha = {1.0f};
-        timer.addActionListener(e -> {
-            alpha[0] -= 0.05f;
-            if (alpha[0] <= 0) {
-                timer.stop();
-                onFinish.run();
-            } else {
-                comp.setForeground(new Color(1.0f, 1.0f, 1.0f, alpha[0]));// 假设文字颜色
-                comp.repaint();
-            }
-        });
-        timer.start();
+
+    /**
+     * 支持图片淡入淡出的自定义标签
+     * 专门用来显示图片，并可控制整体透明度
+     */
+    class FadeImageLabel extends JLabel {
+        private float alpha = 1.0f; // 图片透明度 0~1  0完全透明，1完全不透明
+        private Image image;
+
+        public FadeImageLabel(ImageIcon icon) {
+            super();
+            this.image = icon.getImage();
+            setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
+        // 设置透明度 0.0 ~ 1.0
+        public void setAlpha(float alpha) {
+            this.alpha = Math.max(0.0f, Math.min(1.0f, alpha));
+            repaint();
+        }
+
+        public float getAlpha() {
+            return alpha;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            int x = (getWidth() - image.getWidth(null)) / 2;
+            int y = (getHeight() - image.getHeight(null)) / 2;
+            g2d.drawImage(image, x, y, null);
+            g2d.dispose();
+        }
     }
 
-    // 文字淡入动画
-    private void startFadeAnimation() {
-        fadeTimer = new Timer(20, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                opacity += 0.03f;
-                if (opacity >= 1.0f) {
-                    opacity = 1.0f;
-                    fadeTimer.stop();
-                }
-                nameLabel.setForeground(new Color(255, 255, 255, (int) (opacity * 255)));
+    // 针对 FadeImageLabel 的图片淡出动画
+    private void animateFadeOut(FadeImageLabel comp, Runnable onFinish) {
+        Timer timer = new Timer(20, null);
+        timer.addActionListener(e -> {
+            float curAlpha = comp.getAlpha() - 0.05f;
+            if (curAlpha <= 0) {
+                curAlpha = 0;
+                timer.stop();
+                onFinish.run();
             }
+            comp.setAlpha(curAlpha);
         });
-        fadeTimer.start();
+        timer.start();
     }
 
     // 切换到第二页：背景 + PLAY + READ 按钮
@@ -234,6 +262,19 @@ public class SplashScreen extends JFrame {
         Timer startFadeTimer = new Timer(1500, e -> fadeOutTimer.start());
         startFadeTimer.setRepeats(false);
         startFadeTimer.start();
+
+        fadeTimer = new Timer(20, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                opacity += 0.03f;
+                if (opacity >= 1.0f) {
+                    opacity = 1.0f;
+                    fadeTimer.stop();
+                }
+                messageLabel.setForeground(new Color(255, 255, 255, (int) (opacity * 255)));
+            }
+        });
+        fadeTimer.start();
     }
 
 
