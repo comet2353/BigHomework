@@ -262,20 +262,9 @@ public class SplashScreen extends JFrame {
         Timer startFadeTimer = new Timer(1500, e -> fadeOutTimer.start());
         startFadeTimer.setRepeats(false);
         startFadeTimer.start();
-
-        fadeTimer = new Timer(20, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                opacity += 0.03f;
-                if (opacity >= 1.0f) {
-                    opacity = 1.0f;
-                    fadeTimer.stop();
-                }
-                messageLabel.setForeground(new Color(255, 255, 255, (int) (opacity * 255)));
-            }
-        });
-        fadeTimer.start();
     }
 
-
 }
+
+
+
