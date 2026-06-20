@@ -97,7 +97,7 @@ class MainFrame{
         // ===================== 顶部功能按钮区域 =====================
         northPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 2));
 
-// 1. 先创建图标（你把路径补全即可）
+// 1. 先创建图标
         ImageIcon icon1 = new ImageIcon("image/icon1.png");
         ImageIcon icon2 = new ImageIcon("image/icon2.png");
         ImageIcon icon3 = new ImageIcon("image/icon3.png");
@@ -160,7 +160,7 @@ class MainFrame{
         //设置左部分panel：人物显示区域panel + 文本显示panel
         BackgroundPanel chaPanel = new BackgroundPanel("image/peopleBG.jpg");
         BackgroundPanel contPanel = new BackgroundPanel("image/textBG.png");
-        //设置westpanel的空边距，
+        //*****设置westpanel的空边距，
         westPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         //panel颜色设置
         chaPanel.setBackground(Color.WHITE);
@@ -529,7 +529,7 @@ class MainFrame{
                 }
             }
         });
-
+//bianhongyu制作的ans部分
         // 6. 姓名核对
         checkBtn.addActionListener(e -> {
             String inputName = ansInput.getText().trim();
