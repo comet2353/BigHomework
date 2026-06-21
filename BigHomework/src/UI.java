@@ -646,11 +646,7 @@ public class UI {
                         return;
                     }
 
-                    // 中文校验
-                    if (!inputName.matches("^[\\u4e00-\\u9fa5]+$")) {
-                        JOptionPane.showMessageDialog(frame, "只能输入中文姓名！", "校验失败", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+//                    
 
                     // 数据库校验
                     boolean exists = dao.checkNameExist(inputName);
@@ -745,7 +741,7 @@ public class UI {
                     tableModel.addRow(row);
                 }
             }
-            
+
             // 按备注加载学生到表格
             private void loadStudentByRemark(String remark) {
                 tableModel.setRowCount(0);
