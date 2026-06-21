@@ -4,7 +4,7 @@ import java.sql.DriverManager;
 public class DB {
     // 数据库连接参数
     static String driverName = "com.mysql.cj.jdbc.Driver";
-    static String uri = "jdbc:mysql://localhost:3306/who%20is%20liar%3F?useSSL=false&serverTimezone=UTC";
+    static String uri = "jdbc:mysql://localhost:3306/achieve?useSSL=false&serverTimezone=UTC";
     static String userName = "root";
     static String password = "123456";
 
