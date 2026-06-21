@@ -11,7 +11,7 @@ public class DAO {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from TopSecretArchives where name = ?";
+        String sql = "select * from member where name = ?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -32,7 +32,7 @@ public class DAO {
     public boolean addStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "insert into TopSecretArchives(number, name, nickname, workplace, hobby, remark) values(?, ?, ?, ?, ?, ?)";
+        String sql = "insert into member(number, name, nickname, workplace, hobby, remark) values(?, ?, ?, ?, ?, ?)";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -56,7 +56,7 @@ public class DAO {
     public boolean updateStudent(String num, String name, String nickname, String workplace, String hobby, String notes) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "update TopSecretArchives set number=?, nickname=?, workplace=?, hobby=?, remark=? where name=?";
+        String sql = "update member set number=?, nickname=?, workplace=?, hobby=?, remark=? where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -80,7 +80,7 @@ public class DAO {
     public boolean deleteStudent(String name) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "delete from TopSecretArchives where name=?";
+        String sql = "delete from member where name=?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -101,7 +101,7 @@ public class DAO {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from TopSecretArchives";
+        String sql = "select * from member";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
@@ -126,17 +126,17 @@ public class DAO {
         return list;
     }
     
-    // 按姓名查询学生
+    // 按姓名查询学生（支持模糊搜索）
     public List<Object[]> searchStudent(String name) {
         List<Object[]> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from TopSecretArchives where name=?";
+        String sql = "select * from member where name like ?";
         try {
             conn = DB.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, name);
+            pstmt.setString(1, "%" + name + "%");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Object[] row = {
@@ -157,4 +157,3 @@ public class DAO {
         return list;
     }
 }
-
