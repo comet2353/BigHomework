@@ -156,4 +156,35 @@ public class DAO {
         }
         return list;
     }
+
+    // 按备注查询学生（支持模糊搜索）
+    public List<Object[]> searchStudentByRemark(String remark) {
+        List<Object[]> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from member where remark like ?";
+        try {
+            conn = DB.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, "%" + remark + "%");
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("number"),
+                        rs.getString("name"),
+                        rs.getString("nickname"),
+                        rs.getString("workplace"),
+                        rs.getString("hobby"),
+                        rs.getString("remark")
+                };
+                list.add(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DB.close(conn, pstmt, rs);
+        }
+        return list;
+    }
 }

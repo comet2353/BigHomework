@@ -40,6 +40,12 @@ public class UI {
             BtnIcon prevBtn;
             BtnIcon nextBtn;
 
+            //记录是否已显示过指引
+            private boolean guideShown = false;
+            // 新增：声明搜索框和按钮的引用（需要在后面赋值）
+            private JTextField searchPartByNameRef;
+            private JButton searchBtnByNameRef;
+
             public MainFrame() {
                 frame.setTitle("█ █ █ █");
 
@@ -311,13 +317,14 @@ public class UI {
 
                 //modifyPanel个人信息修改panel：标题 + 4种信息的修改框（2*2）
                 //标题区域
-                JLabel infoMidifyLabel = new JLabel("绝密档案");
+                JLabel infoMidifyLabel = new JLabel("     绝密档案");
 
                 modifyPanel.setLayout(new BorderLayout());//设置整个修改框的布局
                 //标题的边距
-                infoMidifyLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
+                infoMidifyLabel.setBorder(BorderFactory.createEmptyBorder(3, 10, 5, 0));
                 //字体设置
                 infoMidifyLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+                infoMidifyLabel.setForeground(Color.WHITE);
                 modifyPanel.add(infoMidifyLabel, BorderLayout.NORTH);
 
                 //信息添加/修稿区：含有4个大小相同的部分，用网格布局3*2
@@ -391,6 +398,11 @@ public class UI {
                 JLabel searchLabelByName = new JLabel("按姓名查询：");
                 JTextField searchPartByName = new JTextField();
                 JButton searchBtnByName = new JButton("查询");
+
+                // 保存引用供指引使用
+                searchPartByNameRef = searchPartByName;
+                searchBtnByNameRef = searchBtnByName;
+
                 //按备注搜索区域
                 JPanel searchPanelByNote = new JPanel();
                 JLabel searchLabelByNote = new JLabel("按备注查询：");
@@ -511,6 +523,16 @@ public class UI {
                 ansPanel.add(ansInput);
                 ansPanel.add(checkBtn);
 
+                //======================新手指引======================
+                GlassPane glass = new GlassPane();
+                glass.setOpaque(false);
+                // 关键：阻止 GlassPane 拦截事件
+                glass.setFocusable(false);
+                frame.setGlassPane(glass);
+                glass.setVisible(false);
+
+
+
 
                 // ===================== 事件绑定 =====================
                 // 1. 查询全部
@@ -526,7 +548,17 @@ public class UI {
                     loadStudentByName(searchName);
                 });
 
-                // 3. 添加学生
+                // 3. 按备注查询
+                searchBtnByNote.addActionListener(e -> {
+                    String searchRemark = searchPartByNote.getText().trim();
+                    if (searchRemark.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "请输入要查询的备注内容。");
+                        return;
+                    }
+                    loadStudentByRemark(searchRemark);
+                });
+
+                // 4. 添加学生
                 addBtn.addActionListener(e -> {
                     try {
                         String num = numField.getText().trim();
@@ -557,7 +589,7 @@ public class UI {
                     }
                 });
 
-                // 4. 修改学生
+                // 5. 修改学生
                 modBtn.addActionListener(e -> {
                     try {
                         String num = numField.getText().trim();
@@ -585,7 +617,7 @@ public class UI {
                     }
                 });
 
-                // 5. 删除学生
+                // 6. 删除学生
                 delBtn.addActionListener(e -> {
                     String name = nameField.getText().trim();
                     if (name.isEmpty()) {
@@ -606,7 +638,7 @@ public class UI {
                     }
                 });
 
-                // 6. 姓名核对
+                // 7. 姓名核对
                 checkBtn.addActionListener(e -> {
                     String inputName = ansInput.getText().trim();
                     if (inputName.isEmpty()) {
@@ -665,8 +697,26 @@ public class UI {
 
             // 更新页码显示
             private void updatePageLabel() {
+
                 pageLabel.setText(pageManager.getPageDisplay());
-            }
+                // 检查是否第一次到达第5页
+                if (!guideShown && pageManager.getCurrentPageNumber() == 5) {
+                    guideShown = true; // 标记为已显示
+                    showNoviceGuide();
+                }
+            }//updatePageLabel
+            // 显示新手指引
+            private void showNoviceGuide() {
+                SwingUtilities.invokeLater(() -> {
+                    GlassPane glass = (GlassPane) frame.getGlassPane();
+
+                    // 启动指引，传入搜索框、搜索按钮和完成回调
+                    glass.startGuide(searchPartByNameRef, searchBtnByNameRef, () -> {
+                        // 指引完成后的回调（可选）
+                        System.out.println("新手指引完成！");
+                    });
+                });
+            }//showNoviceGuide
 
             // 更新按钮状态
             private void updateButtonStates() {
@@ -689,6 +739,19 @@ public class UI {
                 List<Object[]> students = dao.searchStudent(name);
                 if (students.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "未找到【" + name + "】的信息！");
+                    return;
+                }
+                for (Object[] row : students) {
+                    tableModel.addRow(row);
+                }
+            }
+            
+            // 按备注加载学生到表格
+            private void loadStudentByRemark(String remark) {
+                tableModel.setRowCount(0);
+                List<Object[]> students = dao.searchStudentByRemark(remark);
+                if (students.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "未找到备注包含【" + remark + "】的信息！");
                     return;
                 }
                 for (Object[] row : students) {
