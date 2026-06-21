@@ -27,7 +27,7 @@ public class PageManager {
         textPages.add("【管理员操作查询后】\nA：你知道祂呀，那你应该清楚这次案件的轻重了。");
         textPages.add("a：\n目前锁定关键线索：嫌疑人隶属于614部门，部门内部出现内鬼。");
         textPages.add("a：\n还有一条目击证词，嫌疑人有着一头黄色头发，这是外貌关键特征。");
-        textPages.add("【管理员翻阅档案间隙】\nA：听说春团早前已经从614调去Behold分部了，这条情报你档案里有记录吧？");
+        textPages.add("【管理员翻阅档案间隙】\nA：听说小斗斗早前已经从614调去Behold分部了，这条情报你档案里有记录吧？");
         textPages.add("a：\n我们只有这点信息，你得查个两三天吧");
         textPages.add("\n*【管理员操作中】\n……");
         textPages.add("a：\n查到了？……这么快，也是，小瞧你了");

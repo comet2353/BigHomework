@@ -1,0 +1,17 @@
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0505', '末日的仓鼠之王', '溶酶体复兴者', '溶酶体', '思考人生', '难以捉摸的神秘领导者，最好不要惹祂，可能会带来末日');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('1205', '五java', '洪秀全的父亲', '卫健委', '唱歌', '有两个追求者，鸡翅，经常为祂争风吃醋');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0001', '峨眉立卡', '美国人', '美国（原614）', '美国', '黄头发');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0512', '小斗斗', '心健部毁灭战士', '614', '唱歌', '被无期吉驰和侧颜杀染了黄头发');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0523', '春团', '假期感恩者', '614', '做手工', '（空）');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0007', '杀手47', '没有感情的杀手', 'ICA', '植发', '听着，所谓杀手....');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0129', '嘉年华', '国学大师', '614', '画画', '是个老实人，似乎有什么秘密。曾经私联过仓鼠之王');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0486', '菜月昴', '486', '罗兹瓦尔府邸', '拯救所有人', '拥有无限轮回的能力，似乎是穿越者');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0206', 'LX', '软柿统治者', 'x网楼', '引导', '是个善良的人');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0311', 'DX', '黑客', 'x网楼', '审讯', '最近总是揪着嘉年华不放，他们似乎有什么过节');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0487', '桃晚安', '老大', '第五人格', '拿捏', '老子才是老大');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0714', '花少北', '喇叭', '永劫无间', '耽误', '很爱打永劫无间的一个人，没有文化');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0604', '毛毛', '区', 'LK王国', '爬', '五颜六色的果冻');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('0075', '睡神', '我不是睡神', 'LK王国', '睡觉', '因为经常在睡觉，所以一般看不见祂的眼睛');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('1219', '无期吉驰', '可乐鸡翅宣传大使', '614', '宣传鸡翅', '最近刚获得了一个5米长的鸡翅');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('1220', '侧颜杀', '鸡翅之妻', '614', '陪伴鸡翅', '非常擅长烹饪可乐鸡翅');
+INSERT INTO `member` (`number`, `name`, `nickname`, `workplace`, `hobby`, `remark`) VALUES ('1206', '王家卫', '五女一', '614', '选妃', '曾经染了黄头发，现在是布丁头');
