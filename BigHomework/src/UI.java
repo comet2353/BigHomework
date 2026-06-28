@@ -15,8 +15,7 @@ public class UI {
         //任务提交到 事件分发线程（ EDT） 的队列中
         //将UI的创建/更改集中在单一线程中
         //防止因对同一个组件的多次更改集中在同一时间时导致的崩溃
-        //MainFrame::new
-        //等价于 () -> new MainFrame()
+
         SwingUtilities.invokeLater(() -> {
             new SplashScreen().setVisible(true);
         });
@@ -40,9 +39,10 @@ public class UI {
             BtnIcon prevBtn;
             BtnIcon nextBtn;
 
+
             //记录是否已显示过指引
             private boolean guideShown = false;
-            // 新增：声明搜索框和按钮的引用（需要在后面赋值）
+            // 声明搜索框和按钮的引用（需要在后面赋值）
             private JTextField searchPartByNameRef;
             private JButton searchBtnByNameRef;
 
@@ -163,7 +163,7 @@ public class UI {
                 // 初始化页面管理器
                 pageManager = new PageManager();
 
-                //设置左部分panel：人物显示区域panel + 文本显示panel
+                //设置左部分panel(网格布局)：人物显示区域panel + 文本显示panel
                 BackgroundPanel chaPanel = new BackgroundPanel("image/peopleBG.jpg");
                 BackgroundPanel contPanel = new BackgroundPanel("image/textBG.png");
                 //设置westpanel的空边距，
@@ -286,7 +286,7 @@ public class UI {
                 westPanel.add(contPanel);
 
 
-                //右部分panel：个人信息修改panel + 按钮panel + 数据库信息显示panel + 答案填写panel
+                //右部分panel：个人信息修改panel(边界布局) + 按钮panel + 数据库信息显示panel + 答案填写panel
                 //整体布局：边界布局
                 BackgroundPanel modifyPanel = new BackgroundPanel("image/sousuoBG.png");//个人信息修改panel
                 JPanel buttonPanel = new JPanel();//按钮panel
@@ -370,9 +370,9 @@ public class UI {
 
 
                 //按钮区域（buttonPanel）（透明底）:4个按钮，浮动布局
-                Btn addBtn = new Btn("添加学生");
-                Btn modBtn = new Btn("修改学生");
-                Btn delBtn = new Btn("删除学生");
+                Btn addBtn = new Btn("添加成员");
+                Btn modBtn = new Btn("修改成员");
+                Btn delBtn = new Btn("删除成员");
                 Btn queryBtn = new Btn("查询全部");
                 //将buttonPanel区域背景透明
                 buttonPanel.setOpaque(false);
@@ -526,10 +526,9 @@ public class UI {
                 //======================新手指引======================
                 GlassPane glass = new GlassPane();
                 glass.setOpaque(false);
-                // 关键：阻止 GlassPane 拦截事件
-                glass.setFocusable(false);
+
                 frame.setGlassPane(glass);
-                glass.setVisible(false);
+                glass.setVisible(false);//未达到条件时不可见
 
 
 
@@ -646,14 +645,21 @@ public class UI {
                         return;
                     }
 
-//                    
+
 
                     // 数据库校验
                     boolean exists = dao.checkNameExist(inputName);
-                    if (exists) {
-                        JOptionPane.showMessageDialog(frame, "核对正确！", "提示", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
+                    if (!exists) {
+                        // 数据库里没有这个人
                         JOptionPane.showMessageDialog(frame, "该人员不在档案库中！", "核对失败", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        // 数据库存在该人员，再判断是不是王家卫
+                        if ("王家卫".equals(inputName)) {
+                            JOptionPane.showMessageDialog(frame, "核对正确！", "提示", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            // 在数据库，但不是王家卫，弹出错误
+                            JOptionPane.showMessageDialog(frame, "你确定吗？好像有点问题", "核对失败", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 });
 
@@ -701,16 +707,27 @@ public class UI {
                     showNoviceGuide();
                 }
             }//updatePageLabel
+
             // 显示新手指引
             private void showNoviceGuide() {
-                SwingUtilities.invokeLater(() -> {
+                SwingUtilities.invokeLater(() -> {//排队，等有空时再执行。避免并发冲突，导致程序卡顿
                     GlassPane glass = (GlassPane) frame.getGlassPane();
 
                     // 启动指引，传入搜索框、搜索按钮和完成回调
                     glass.startGuide(searchPartByNameRef, searchBtnByNameRef, () -> {
-                        // 指引完成后的回调（可选）
+                        // 指引完成后的回调
                         System.out.println("新手指引完成！");
                     });
+                    //Runnable接口只有一个抽象方法，故可以使用lambda表达式从而简化代码
+//                    // 完整写法（匿名内部类）
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            System.out.println("新手指引完成！");
+//                        }
+//                    }
+
+
                 });
             }//showNoviceGuide
 

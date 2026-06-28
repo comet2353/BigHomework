@@ -8,8 +8,8 @@ import java.awt.geom.Area;
 
 //新手指引部分的画布设置，包括特定区域挖空，绘制半透明黑色幕布等
 public class GlassPane extends JComponent {
+    //因为想要绘制自定义的背景，且不用于装其他组件，所以使用更为轻量级的JComponent而不是JPanel
     private Rectangle cutout;//挖空区域
-    private boolean flag = false;//是否展示幕布效果，初始为false
 
     //指引步骤控制
     private int guideStep = 0; // 0=未激活, 1=输入阶段, 2=点击按钮阶段
@@ -21,16 +21,12 @@ public class GlassPane extends JComponent {
     private ActionListener tempButtonListener;
 
     public GlassPane() {
-        // 关键：不获取焦点，让焦点能到下层组件
+        // 控制键盘焦点：幕布不获取焦点，让焦点能到下层组件，幕布以下的区域可以正常打字
         setFocusable(false);
         // 关键：背景透明
         setOpaque(false);
     }
 
-    ///changeflag
-    public void changeFlag(){
-        this.flag = !flag;
-    }
 
     //获取cutout
     public Rectangle getCutout(){
@@ -68,7 +64,7 @@ public class GlassPane extends JComponent {
         });
     }
 
-    // 新增：根据当前步骤更新挖空区域
+    // 根据当前步骤更新挖空区域
     private void updateCutoutForCurrentStep() {
         if (guideStep == 1 && targetTextField != null) {
             Rectangle bounds = SwingUtilities.convertRectangle(
@@ -90,18 +86,22 @@ public class GlassPane extends JComponent {
             setCutout(bounds);
             System.out.println("[GlassPane] 第二步挖空区域: " + bounds);
 
-            // ===== 关键修改：直接在按钮上添加监听器 =====
+            // 直接在按钮上添加监听器
             addButtonClickListener();
 
         }
     }
-    // 直接在目标按钮上添加监听器
+    // 直接在目标按钮上添加监听器（达到先隐藏幕布再按原先的监听器的功能执行的目的）
     private void addButtonClickListener() {
         if (targetButton == null) return;
 
-        // 移除旧的监听器（如果有）
+        // 移除旧的监听器tempButtonListener（如果有）
         if (tempButtonListener != null) {
+            //防止因用户快速输入又删除再输入，updateCutoutForCurrentStep 被触发了第二次，又调用 addButtonClickListener()。
+            //，使得按钮上会有两个相同的监听器 A。
+            //导致用户点击按钮时，finishGuide() 会被执行两次，可能导致异常或 UI 闪烁
             targetButton.removeActionListener(tempButtonListener);
+            //移除target中与tempButtonListener地址相同的所有监听器
         }
 
         tempButtonListener = new ActionListener() {
@@ -115,8 +115,9 @@ public class GlassPane extends JComponent {
                 finishGuide();
             }
         };
-        // 在现有监听器之前添加（保证先执行我们的完成逻辑）
+        // 在现有监听器之前添加tempButtonListener（保证先将幕布隐藏）
         ActionListener[] existingListeners = targetButton.getActionListeners();
+        //返回targetbutton中现有的所有监听器组成的数组
         for (ActionListener listener : existingListeners) {
             targetButton.removeActionListener(listener);
         }
@@ -141,17 +142,17 @@ public class GlassPane extends JComponent {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkInput();
-            }
+            }//文字被插入时执行checkinput方法
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 checkInput();
-            }
+            }//文字被删除时执行
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 checkInput();
-            }
+            }//文字属性改变时（如文字颜色，字体等改变）
         });
 
         System.out.println("[GlassPane] 已添加输入监听器");
@@ -183,10 +184,10 @@ public class GlassPane extends JComponent {
             tempButtonListener = null;
         }
 
-        guideStep = 0;
+        guideStep = 0;//回到初始状态
         guideText = "";
         cutout = null; // 清除挖空区域
-        setVisible(false);
+        setVisible(false);//隐藏幕布
         setFocusable(false);
         repaint();
 
@@ -207,10 +208,10 @@ public class GlassPane extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (cutout != null) {
-            // ===== 方案一：使用 Area 减法（推荐，不会变黑） =====
+            // 使用 Area 减法（不会变黑）
             Shape fullArea = new Rectangle(0, 0, getWidth(), getHeight());
             Area maskArea = new Area(fullArea);
-            maskArea.subtract(new Area(cutout));
+            maskArea.subtract(new Area(cutout));//执行减法方法，减去cutout
 
             // 绘制遮罩区域
             g2.setColor(new Color(0, 0, 0, 150));
@@ -220,6 +221,7 @@ public class GlassPane extends JComponent {
             g2.setColor(new Color(255, 255, 100, 220));
             g2.setStroke(new BasicStroke(3));
             g2.drawRect(cutout.x, cutout.y, cutout.width, cutout.height);
+            //绘制矩形边框（cutout左上角的x坐标，左上角的y坐标，cutout宽度，高度）
         } else {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, getWidth(), getHeight());
@@ -258,8 +260,8 @@ public class GlassPane extends JComponent {
     }//paintComponent
 
     @Override
-    //点击挖空区域时，事件穿透到下层组件
-    //若若位于指定区域内，则返回false，则鼠标事件会穿透玻璃，落到搜索框上
+    //点击挖空区域时，鼠标事件穿透到下层组件
+    //若位于指定区域内，则返回false，则鼠标事件会穿透玻璃，落到搜索框上
     //否则调用父类的判断，正常拦截非指定区域的鼠标，不让他们点到下面的按钮。
     public boolean contains(int x, int y) {
         // ===== 第二步时，按钮区域不穿透 =====
@@ -270,32 +272,5 @@ public class GlassPane extends JComponent {
         }
         return super.contains(x, y);
     }
-
-
-//    // 处理鼠标点击事件（用于第二步点击按钮）
-//    @Override
-//    protected void processMouseEvent(MouseEvent e) {
-//        // 调试：打印所有鼠标事件
-//        System.out.println("GlassPane 收到鼠标事件: " + e.getID() +
-//                " 位置: (" + e.getX() + "," + e.getY() + ")" +
-//                " guideStep=" + guideStep +
-//                " cutout=" + cutout);
-//
-//        if (guideStep == 2 && cutout != null && cutout.contains(e.getX(), e.getY())) {
-//            System.out.println(">>> 进入第二步点击处理！");
-//            if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-//                System.out.println(">>> 触发 finishGuide");
-//                // 先完成指引（隐藏幕布）
-//                finishGuide();
-//
-//                // 然后在EDT中执行按钮点击
-//                // 使用 invokeLater 确保幕布先隐藏，再执行查询
-//                SwingUtilities.invokeLater(() -> {
-//                    System.out.println(">>> 触发 doClick");
-//                    targetButton.doClick();
-//                });
-//            }
-//        }
-//        super.processMouseEvent(e);
-//    }
+    
 }
